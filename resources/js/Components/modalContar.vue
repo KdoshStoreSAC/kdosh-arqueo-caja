@@ -34,6 +34,12 @@ export default {
             }
         };
 
+        const validarCantidad = (index: number) => {
+            if (denominaciones.value[index].cantidad < 0) {
+                denominaciones.value[index].cantidad = 0;
+            }
+        };
+
         const calcularTotal = () => {
             total.value = denominaciones.value.reduce((sum, den) => sum + (den.valor * den.cantidad), 0);
         };
@@ -51,6 +57,7 @@ export default {
             total,
             incrementar,
             decrementar,
+            validarCantidad,
             confirmar,
             cancelar
         };
@@ -73,7 +80,11 @@ export default {
                         </button>
 
                         <div class="flex items-center">
-                            <span class="text-white mx-3">{{ den.cantidad }}</span>
+                            <input type="number" v-model.number="den.cantidad" @input="validarCantidad(index)" :class="{
+                                'w-[35px]': den.cantidad.toString().length <= 2,
+                                'w-[50px]': den.cantidad.toString().length > 2
+                            }"
+                                class="no-arrows px-2 py-1 text-white bg-transparent border-0 rounded text-center focus:outline-none focus:ring-0" />
                         </div>
 
                         <button @click="incrementar(index)"
@@ -81,7 +92,8 @@ export default {
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
-                    <span class="text-white lg:text-sm text-[9.4px] flex-1 text-left ml-1">S/. {{ den.valor.toFixed(2) }}</span>
+                    <span class="text-white lg:text-sm text-[9.4px] flex-1 text-left ml-1">S/. {{ den.valor.toFixed(2)
+                        }}</span>
                 </div>
 
                 <div v-for="(den, index) in denominaciones.slice(5, 11)" :key="`col2-${index}`"
@@ -93,7 +105,11 @@ export default {
                         </button>
 
                         <div class="flex items-center">
-                            <span class="text-white mx-3">{{ den.cantidad }}</span>
+                            <input type="number" v-model.number="den.cantidad" @input="validarCantidad(index)" :class="{
+                                'w-[35px]': den.cantidad.toString().length <= 2,
+                                'w-[50px]': den.cantidad.toString().length > 2
+                            }"
+                                class="no-arrows px-2 py-1 text-white bg-transparent border-0 rounded text-center focus:outline-none focus:ring-0" />
                         </div>
 
                         <button @click="incrementar(index + 5)"
@@ -101,7 +117,8 @@ export default {
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
-                    <span class="text-white lg:text-sm text-[9.4px] flex-1 text-left ml-1">S/. {{ den.valor.toFixed(2) }}</span>
+                    <span class="text-white lg:text-sm text-[9.4px] flex-1 text-left ml-1">S/. {{ den.valor.toFixed(2)
+                        }}</span>
                 </div>
             </div>
 
@@ -124,3 +141,15 @@ export default {
         </div>
     </div>
 </template>
+
+<style scoped>
+input[type="number"].no-arrows::-webkit-inner-spin-button,
+input[type="number"].no-arrows::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"].no-arrows {
+    -moz-appearance: textfield;
+}
+</style>
