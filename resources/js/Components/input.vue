@@ -18,18 +18,18 @@ export default {
             showModal: false,
             inputValue: '',
             denominaciones: [
-                { valor: 200.00, cantidad: 0 },
-                { valor: 2.00, cantidad: 0 },
-                { valor: 100.00, cantidad: 0 },
-                { valor: 1.00, cantidad: 0 },
-                { valor: 50.00, cantidad: 0 },
-                { valor: 0.50, cantidad: 0 },
-                { valor: 20.00, cantidad: 0 },
-                { valor: 0.20, cantidad: 0 },
-                { valor: 10.00, cantidad: 0 },
                 { valor: 0.10, cantidad: 0 },
-                { valor: 5.00, cantidad: 0 }
-            ]
+                { valor: 0.20, cantidad: 0 },
+                { valor: 0.50, cantidad: 0 },
+                { valor: 1.00, cantidad: 0 },
+                { valor: 2.00, cantidad: 0 },
+                { valor: 5.00, cantidad: 0 },
+                { valor: 10.00, cantidad: 0 },
+                { valor: 20.00, cantidad: 0 },
+                { valor: 50.00, cantidad: 0 },
+                { valor: 100.00, cantidad: 0 },
+                { valor: 200.00, cantidad: 0 }
+            ],
         }
     },
     methods: {
@@ -39,17 +39,17 @@ export default {
             if (input) input.focus();
 
             this.denominaciones = [
-                { valor: 200.00, cantidad: 0 },
-                { valor: 2.00, cantidad: 0 },
-                { valor: 100.00, cantidad: 0 },
-                { valor: 1.00, cantidad: 0 },
-                { valor: 50.00, cantidad: 0 },
-                { valor: 0.50, cantidad: 0 },
-                { valor: 20.00, cantidad: 0 },
-                { valor: 0.20, cantidad: 0 },
-                { valor: 10.00, cantidad: 0 },
                 { valor: 0.10, cantidad: 0 },
-                { valor: 5.00, cantidad: 0 }
+                { valor: 0.20, cantidad: 0 },
+                { valor: 0.50, cantidad: 0 },
+                { valor: 1.00, cantidad: 0 },
+                { valor: 2.00, cantidad: 0 },
+                { valor: 5.00, cantidad: 0 },
+                { valor: 10.00, cantidad: 0 },
+                { valor: 20.00, cantidad: 0 },
+                { valor: 50.00, cantidad: 0 },
+                { valor: 100.00, cantidad: 0 },
+                { valor: 200.00, cantidad: 0 }
             ];
 
             this.$emit('updateSaldo', '0.00');
@@ -81,7 +81,7 @@ export default {
             }
             this.inputValue = inputValueStr;
             this.$emit('updateSaldo', this.inputValue);
-        }
+        },
     },
 };
 </script>
