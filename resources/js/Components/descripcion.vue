@@ -16,8 +16,8 @@ export default defineComponent({
     computed: {
         descriptionText(): string {
             return this.denominaciones
-                .filter(den => den.cantidad > 0)
-                .map(den => `- ${den.cantidad} x S/. ${den.valor.toFixed(2)}`)
+                .filter((den: Denominacion) => den.cantidad > 0)
+                .map((den: Denominacion) => `- ${den.cantidad} x S/. ${den.valor.toFixed(2)}`)
                 .join('\n');
         },
     },

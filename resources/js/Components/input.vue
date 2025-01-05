@@ -64,6 +64,12 @@ export default {
             this.showModal = false;
 
             this.$emit('updateSaldo', total.toFixed(2));
+
+            const descripcion = this.denominaciones
+                .filter((den: any) => den.cantidad > 0)
+                .map((den: any) => `- ${den.cantidad} x S/. ${den.valor.toFixed(2)}`)
+                .join('\n');
+            this.$emit('updateDescripcion', descripcion);
         },
         handleInput() {
             const total = parseFloat(this.inputValue || '0').toFixed(2);

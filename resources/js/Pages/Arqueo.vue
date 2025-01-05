@@ -12,13 +12,17 @@ export default defineComponent({
     data() {
         return {
             saldoEfectivo: '0.00',
+            descripcionDenominaciones: '',
             notas: [{ saldo: '0.00', lote: '' }],
-            bancos: [{ saldo: '0.00', lote: '' }]
+            bancos: [{ saldo: '0.00', lote: '' }],
         };
     },
     methods: {
         updateSaldoEfectivo(newSaldo: string) {
             this.saldoEfectivo = newSaldo;
+        },
+        updateDescripcionDenominaciones(descripcion: string) {
+            this.descripcionDenominaciones = descripcion;
         },
         updateSaldoBanco(index: number, newSaldo: string) {
             this.bancos[index].saldo = newSaldo;
@@ -49,37 +53,56 @@ export default defineComponent({
             this.notas[index].lote = '';
         },
         downloadExcel() {
-            const data = [
+            const dataCuadre = [
                 ['𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐜𝐢ó𝐧', '𝐌𝐨𝐧𝐭𝐨'],
-                ['Apertura', `S/. ${this.saldoInicial}`],
-                ['Pagos en Efectivo', `S/. ${this.saldoPagoEfectivo}`],
-                ['Total Efectivo', `S/. ${this.totalEfectivo}`],
-                ['Banco Contado', `S/. ${this.saldoBanco}`],
-                ['Yape Contado', `S/. ${this.saldoYape}`],
-                ['Total', `S/. ${this.total}`],
+                ['𝐄𝐟𝐞𝐜𝐭𝐢𝐯𝐨', `S/. ${this.saldoEfectivo}`],
+                ['', ''],
+                ['𝐁𝐚𝐧𝐜𝐨𝐬', '']
             ];
 
-            const ws = XLSX.utils.aoa_to_sheet(data);
+            this.bancos.forEach((banco, index) => {
+                dataCuadre.push([`Banco ${index + 1} - Lote: ${banco.lote || 'No definido'}`, `S/. ${banco.saldo}`]);
+            });
+            dataCuadre.push(['Total Bancos', `S/. ${this.totalBancos}`]);
+
+            dataCuadre.push(['', '']);
+            dataCuadre.push(['𝐍𝐨𝐭𝐚𝐬 𝐝𝐞 𝐂𝐫é𝐝𝐢𝐭𝐨𝐬', '']);
+            this.notas.forEach((nota, index) => {
+                dataCuadre.push([`Nota Crédito ${index + 1} - Lote: ${nota.lote || 'No definido'}`, `S/. ${nota.saldo}`]);
+            });
+            dataCuadre.push(['Total Notas Créditos', `S/. ${this.totalNotas}`]);
+
+            dataCuadre.push(['', '']);
+            dataCuadre.push(['𝐓𝐨𝐭𝐚𝐥', `S/. ${this.total}`]);
+
+            const wsCuadre = XLSX.utils.aoa_to_sheet(dataCuadre);
 
             const style = {
                 font: { bold: true },
                 fill: { fgColor: { rgb: 'C6EFCE' } },
             };
 
-            const totalRowIndexes = [3, 7];
+            const totalRowIndexes = [
+                dataCuadre.findIndex(row => row[0] === 'Total Bancos'),
+                dataCuadre.findIndex(row => row[0] === 'Total Notas Créditos'),
+                dataCuadre.findIndex(row => row[0] === '𝐓𝐨𝐭𝐚𝐥'),
+            ];
             totalRowIndexes.forEach(index => {
-                const cellA = `A${index + 2}`;
-                const cellB = `B${index + 2}`;
-                if (ws[cellA]) {
-                    ws[cellA].s = style;
-                }
-                if (ws[cellB]) {
-                    ws[cellB].s = style;
-                }
+                const cellA = `A${index + 1}`;
+                const cellB = `B${index + 1}`;
+                if (wsCuadre[cellA]) wsCuadre[cellA].s = style;
+                if (wsCuadre[cellB]) wsCuadre[cellB].s = style;
             });
 
+            const descripcionData = [['𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐜𝐢ó𝐧 𝐝𝐞 𝐃𝐞𝐧𝐨𝐦𝐢𝐧𝐚𝐜𝐢𝐨𝐧𝐞𝐬']];
+            const descripcionRows = this.descripcionDenominaciones.split('\n').map(line => [line]);
+            descripcionData.push(...descripcionRows);
+
+            const wsDescripcion = XLSX.utils.aoa_to_sheet(descripcionData);
+
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Cuadre de Caja');
+            XLSX.utils.book_append_sheet(wb, wsCuadre, 'Cuadre de Caja');
+            XLSX.utils.book_append_sheet(wb, wsDescripcion, 'Descripción de Efectivo');
 
             XLSX.writeFile(wb, 'cuadre_de_caja.xlsx');
         },
@@ -133,7 +156,8 @@ export default defineComponent({
                 <div class="bg-white text-[#181818] w-full lg:w-1/4 flex flex-col justify-center items-center">
                     <div class="w-full max-w-sm">
                         <span class="block font-semibold">Efectivo</span>
-                        <Input :showBillButton="true" @updateSaldo="updateSaldoEfectivo" />
+                        <Input :showBillButton="true" @updateSaldo="updateSaldoEfectivo"
+                            @updateDescripcion="updateDescripcionDenominaciones" />
                     </div>
                 </div>
 
@@ -213,7 +237,7 @@ export default defineComponent({
                                     <span>S/. {{ banco.saldo }}</span>
                                 </li>
                                 <li class="flex justify-between ml-5 font-bold mb-3">
-                                    <span>TOTAL BANCO</span>
+                                    <span>TOTAL BANCOS</span>
                                     <span
                                         class="relative before:block before:absolute before:w-full before:h-[1.5px] before:bg-white before:top-[-3px]">
                                         S/. {{ totalBancos }}
@@ -225,14 +249,13 @@ export default defineComponent({
                         <span class="block font-bold mb-2 text-sm">NOTA DE CRÉDITOS</span>
                         <ul class="mb-2 text-sm">
                             <div class="border-l border-gray-500">
-                                <li v-for="(nota, index) in notas" :key="index"
-                                    class="flex justify-between ml-5 mb-3">
+                                <li v-for="(nota, index) in notas" :key="index" class="flex justify-between ml-5 mb-3">
                                     <span><i class="fa-solid fa-plus mr-2"></i> {{ `Nota C. ${index + 1} - Lote:
                                         ${nota.lote || 'No definido'}` }}</span>
                                     <span>S/. {{ nota.saldo }}</span>
                                 </li>
                                 <li class="flex justify-between ml-5 font-bold mb-3">
-                                    <span>TOTAL NOTA DE CRÉDITOS</span>
+                                    <span>TOTAL NOTA CRÉDITOS</span>
                                     <span
                                         class="relative before:block before:absolute before:w-full before:h-[1.5px] before:bg-white before:top-[-3px]">
                                         S/. {{ totalNotas }}
