@@ -11,15 +11,23 @@ export default defineComponent({
     },
     data() {
         return {
+            saldoApertura: '0.00',
             saldoEfectivo: '0.00',
+            descripcionDenominacionesApertura: '',
             descripcionDenominaciones: '',
             notas: [{ saldo: '0.00', lote: '' }],
             bancos: [{ saldo: '0.00', lote: '' }],
         };
     },
     methods: {
+        updateSaldoApertura(newSaldo: string) {
+            this.saldoApertura = newSaldo;
+        },
         updateSaldoEfectivo(newSaldo: string) {
             this.saldoEfectivo = newSaldo;
+        },
+        updateDescripcionDenominacionesApertura(descripcion: string) {
+            this.descripcionDenominacionesApertura = descripcion;
         },
         updateDescripcionDenominaciones(descripcion: string) {
             this.descripcionDenominaciones = descripcion;
@@ -94,9 +102,14 @@ export default defineComponent({
                 if (wsCuadre[cellB]) wsCuadre[cellB].s = style;
             });
 
-            const descripcionData = [['𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐜𝐢ó𝐧 𝐝𝐞 𝐃𝐞𝐧𝐨𝐦𝐢𝐧𝐚𝐜𝐢𝐨𝐧𝐞𝐬']];
+            const descripcionData = [['𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐜𝐢ó𝐧 𝐝𝐞 𝐃𝐞𝐧𝐨𝐦𝐢𝐧𝐚𝐜𝐢𝐨𝐧𝐞𝐬 - 𝐄𝐟𝐞𝐜𝐭𝐢𝐯𝐨']];
             const descripcionRows = this.descripcionDenominaciones.split('\n').map(line => [line]);
             descripcionData.push(...descripcionRows);
+
+            descripcionData.push(['', '']);
+            descripcionData.push(['𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐜𝐢ó𝐧 𝐝𝐞 𝐃𝐞𝐧𝐨𝐦𝐢𝐧𝐚𝐜𝐢𝐨𝐧𝐞𝐬 - 𝐀𝐩𝐞𝐫𝐭𝐮𝐫𝐚']);
+            const descripcionAperturaRows = this.descripcionDenominacionesApertura.split('\n').map(line => [line]);
+            descripcionData.push(...descripcionAperturaRows);
 
             const wsDescripcion = XLSX.utils.aoa_to_sheet(descripcionData);
 
@@ -154,6 +167,11 @@ export default defineComponent({
         <div class="bg-white mx-4 md:mx-9 rounded-md shadow-md">
             <div class="flex flex-col lg:flex-row gap-4 md:gap-6 p-4 md:p-8">
                 <div class="bg-white text-[#181818] w-full lg:w-1/4 flex flex-col justify-center items-center">
+                    <div class="w-full max-w-sm">
+                        <span class="block font-semibold">Apertura</span>
+                        <Input :showBillButton="true" @updateSaldo="updateSaldoApertura"
+                            @updateDescripcion="updateDescripcionDenominacionesApertura" />
+                    </div>
                     <div class="w-full max-w-sm">
                         <span class="block font-semibold">Efectivo</span>
                         <Input :showBillButton="true" @updateSaldo="updateSaldoEfectivo"
