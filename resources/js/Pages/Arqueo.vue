@@ -203,7 +203,7 @@ export default defineComponent({
                                         <div class="relative w-30 ml-5">
                                             <input type="text"
                                                 class="w-full p-2 focus:outline-none border border-gray-300 rounded appearance-none text-black"
-                                                placeholder="Digite el lote" v-model="banco.lote" />
+                                                placeholder="N° de factura" v-model="banco.lote" />
                                             <i class="fas fa-times absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
                                                 @click="clearInput(index)"></i>
                                         </div>
@@ -229,7 +229,7 @@ export default defineComponent({
                                         <div class="relative w-30 ml-5">
                                             <input type="text"
                                                 class="w-full p-2 focus:outline-none border border-gray-300 rounded appearance-none text-black"
-                                                placeholder="Digite el lote" v-model="nota.lote" />
+                                                placeholder="N° de factura" v-model="nota.lote" />
                                             <i class="fas fa-times absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
                                                 @click="clearInputNota(index)"></i>
                                         </div>
